@@ -228,8 +228,8 @@ export default function App() {
             <Icons.Stethoscope size={20} />
           </div>
           <div>
-            <h1 style={{ fontSize: '15px', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--text-bright)' }}>DoctorOS</h1>
-            <span style={{ fontSize: '10px', color: 'var(--color-cyan)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>AI Clinic OS v1.0</span>
+            <h1 style={{ fontSize: '15px', fontWeight: 800, letterSpacing: '0.05em', textTransform: 'uppercase', color: 'var(--text-bright)' }}>AI Clinic OS</h1>
+            <span style={{ fontSize: '10px', color: 'var(--color-cyan)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>Operating System v1.0</span>
           </div>
         </div>
 
@@ -266,7 +266,7 @@ export default function App() {
             }}
           >
             <Icons.Stethoscope size={18} />
-            DoctorOS Workspace
+            AI Clinic OS Workspace
           </button>
 
           <button 
