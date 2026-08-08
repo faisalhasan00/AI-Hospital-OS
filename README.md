@@ -296,12 +296,4 @@ The React + Vite application will run on `http://localhost:5173`.
 
 ---
 
-<div align="center">
 
-<<<<<<< HEAD
-**Developed with ❤️ for Modern Digital Healthcare Clinics**
-=======
-
->>>>>>> ccb7501 (feat: Initial DoctorOS codebase commit)
-
-</div>
