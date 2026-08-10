@@ -1,53 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './DoctorOSWorkspace.css';
+import RoleSwitcherHeader from './components/RoleSwitcherHeader.jsx';
+import DoctorDashboardView from './components/DoctorDashboardView.jsx';
+import PatientProfileDrawer from './components/PatientProfileDrawer.jsx';
+import ConsultationWorkbench from './components/ConsultationWorkbench.jsx';
+import FollowupAlertsInbox from './components/FollowupAlertsInbox.jsx';
 
-export default function DoctorOSWorkspace() {
-  const [activeTab, setActiveTab] = useState('doctor'); // 'doctor', 'frontdesk', 'reception', 'analytics'
-  const [language, setLanguage] = useState('en');
-  
-  // Dashboard Metrics
-  const [dashboardData, setDashboardData] = useState({
-    today: {
-      appointmentsCount: 48,
-      completedCount: 35,
-      waitingCount: 6,
-      cancelledCount: 3,
-      noShowCount: 4,
-      aiCallsHandled: 31,
-      whatsappConversations: 67,
-      followupsDue: 18,
-      revenueInr: 48500
-    },
-    nextPatient: {
-      name: 'Rahul Sharma',
-      age: 34,
-      time: '5:30 PM',
-      previousVisits: 4,
-      reportsUploaded: 3,
-      aiSummary: 'Fever for 3 days with cough. Chest clear on auscultation. History of mild asthma.'
-    }
-  });
+export default function DoctorOSWorkspace({ onSignOut }) {
+  const [activeRole, setActiveRole] = useState('doctor'); // 11 roles available
+  const [doctorViewMode, setDoctorViewMode] = useState('dashboard'); // 'dashboard', 'consultation', 'alerts'
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Front Desk Voice/WhatsApp Simulator State
+  // Front Desk / WhatsApp Simulator State
   const [userChatInput, setUserChatInput] = useState('');
   const [chatMessages, setChatMessages] = useState([
-    { sender: 'AI Front Desk', text: 'Hello! Welcome to ABC Clinic. How can I help you today?', time: '5:28 PM', intent: 'GREETING' }
+    { sender: 'AI Front Desk', text: 'Hello! Welcome to ABC Clinic. How can I help you with your appointment today?', time: '5:28 PM' }
   ]);
   const [isAiProcessing, setIsAiProcessing] = useState(false);
 
-  // Scribe State
-  const [consultTranscript, setConsultTranscript] = useState(
-    "Doctor: Hello Rahul, what brings you in today?\nPatient: Doctor, I have had a high fever for 3 days along with a severe cough.\nDoctor: Let me check your temperature and listen to your lungs. Temperature is 101°F, lungs sound clear. I will prescribe Paracetamol 650mg twice daily for 3 days and Ambroxol syrup. Take rest and drink warm water."
-  );
-  const [soapDraft, setSoapDraft] = useState(null);
-  const [isScribing, setIsScribing] = useState(false);
-  const [approvedStatus, setApprovedStatus] = useState(null);
-
-  // Follow-up Simulator State
-  const [followupInput, setFollowupInput] = useState('I am feeling much better now, fever is gone!');
-  const [followupResult, setFollowupResult] = useState(null);
-
   const API_BASE = 'http://localhost:5000/api/doctoros';
+
+  // Sample Patient Data
+  const defaultNextPatient = {
+    id: 'P-10928',
+    name: 'Rahul Sharma',
+    age: 34,
+    gender: 'Male',
+    time: '5:30 PM',
+    previousVisits: 3,
+    reportsUploaded: 2,
+    aiSummary: 'High grade fever for 3 days with dry cough. Chest clear on auscultation. History of mild asthma.'
+  };
+
+  const handleStartConsultation = (patient) => {
+    setSelectedPatient(patient || defaultNextPatient);
+    setDoctorViewMode('consultation');
+  };
+
+  const handleOpenPatientProfile = (patient) => {
+    setSelectedPatient(patient || defaultNextPatient);
+    setIsDrawerOpen(true);
+  };
 
   // Front Desk Submission
   const handleFrontDeskSubmit = async (e) => {
@@ -63,7 +57,7 @@ export default function DoctorOSWorkspace() {
       const res = await fetch(`${API_BASE}/front-desk`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userMessage: userText, language, channel: 'whatsapp' })
+        body: JSON.stringify({ userMessage: userText, channel: 'whatsapp' })
       });
       const data = await res.json();
 
@@ -84,330 +78,236 @@ export default function DoctorOSWorkspace() {
     }
   };
 
-  // Generate Scribe SOAP Draft
-  const handleGenerateScribeDraft = async () => {
-    setIsScribing(true);
-    setSoapDraft(null);
-    setApprovedStatus(null);
-    try {
-      const res = await fetch(`${API_BASE}/scribe/draft`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ transcript: consultTranscript, patientId: 'P-10928', doctorId: 'DOC-401' })
-      });
-      const data = await res.json();
-      setSoapDraft(data.consultation);
-    } catch (err) {
-      console.error('Scribe Error:', err);
-    } finally {
-      setIsScribing(false);
-    }
-  };
-
-  // Doctor Approve Consultation
-  const handleApproveConsultation = async () => {
-    if (!soapDraft) return;
-    try {
-      const res = await fetch(`${API_BASE}/consultation/approve`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          consultationId: soapDraft.id,
-          finalDiagnosis: soapDraft.draft_assessment,
-          finalPlan: soapDraft.draft_plan,
-          prescriptionItems: soapDraft.proposed_prescription,
-          followupDays: 3
-        })
-      });
-      const data = await res.json();
-      setApprovedStatus(data.data);
-    } catch (err) {
-      console.error('Approval Error:', err);
-    }
-  };
-
-  // Follow-up Simulator
-  const handleSimulateFollowup = async () => {
-    try {
-      const res = await fetch(`${API_BASE}/followup/response`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ patientMessage: followupInput, patientId: 'P-10928' })
-      });
-      const data = await res.json();
-      setFollowupResult(data);
-    } catch (err) {
-      console.error('Followup Error:', err);
-    }
-  };
-
   return (
     <div className="doctoros-container">
-      {/* Top Banner Header */}
-      <header className="doctoros-header">
-        <div className="brand-logo">
-          <span className="logo-icon">🩺</span>
-          <div>
-            <h1>DoctorOS <span className="badge-saas">Multi-Tenant SaaS</span></h1>
-            <p className="subtitle">AI-Powered Clinic Operating System</p>
+      {/* 1. Global Role Switcher Header */}
+      <RoleSwitcherHeader activeRole={activeRole} onSelectRole={setActiveRole} onSignOut={onSignOut} />
+
+      {/* 2. DOCTOR WORKSPACE (PRIMARY FOCUS) */}
+      {activeRole === 'doctor' && (
+        <main className="doctoros-main-content">
+          {/* Sub Navigation Bar for Doctor */}
+          <div className="doctor-subnav">
+            <button className={`subnav-btn ${doctorViewMode === 'dashboard' ? 'active' : ''}`} onClick={() => setDoctorViewMode('dashboard')}>
+              📊 Today's Patients & Queue (18)
+            </button>
+            <button className={`subnav-btn ${doctorViewMode === 'consultation' ? 'active' : ''}`} onClick={() => setDoctorViewMode('consultation')}>
+              🎙️ Live Consultation & AI Scribe
+            </button>
+            <button className={`subnav-btn ${doctorViewMode === 'alerts' ? 'active' : ''}`} onClick={() => setDoctorViewMode('alerts')}>
+              📱 Follow-up Recovery Alerts (2)
+            </button>
           </div>
-        </div>
 
-        {/* Tab Navigation */}
-        <nav className="doctoros-nav">
-          <button className={`nav-btn ${activeTab === 'doctor' ? 'active' : ''}`} onClick={() => setActiveTab('doctor')}>
-            👨‍⚕️ Doctor Workspace
-          </button>
-          <button className={`nav-btn ${activeTab === 'frontdesk' ? 'active' : ''}`} onClick={() => setActiveTab('frontdesk')}>
-            🤖 AI Front Desk (Voice/WA)
-          </button>
-          <button className={`nav-btn ${activeTab === 'reception' ? 'active' : ''}`} onClick={() => setActiveTab('reception')}>
-            📋 Reception Queue & Follow-ups
-          </button>
-          <button className={`nav-btn ${activeTab === 'analytics' ? 'active' : ''}`} onClick={() => setActiveTab('analytics')}>
-            📊 Clinic Analytics
-          </button>
-        </nav>
-      </header>
+          {/* Render Views based on Doctor Mode */}
+          {doctorViewMode === 'dashboard' && (
+            <DoctorDashboardView
+              dashboardData={{ today: {}, nextPatient: defaultNextPatient }}
+              onStartConsultation={handleStartConsultation}
+              onOpenPatientProfile={handleOpenPatientProfile}
+            />
+          )}
 
-      {/* Main Container Content */}
-      <main className="doctoros-main">
-        {/* 1. DOCTOR WORKSPACE TAB */}
-        {activeTab === 'doctor' && (
-          <div className="workspace-grid">
-            {/* Left Column: Pre-consultation AI Summary & Patient Timeline */}
-            <div className="card summary-card">
-              <div className="card-header">
-                <h3>⚡ Next Patient AI Summary</h3>
-                <span className="badge-time">{dashboardData.nextPatient.time}</span>
-              </div>
-              <div className="patient-profile">
-                <h2>{dashboardData.nextPatient.name} <span className="age-tag">{dashboardData.nextPatient.age} yrs</span></h2>
-                <div className="metrics-row">
-                  <span>Previous Visits: <strong>{dashboardData.nextPatient.previousVisits}</strong></span>
-                  <span>Reports: <strong>{dashboardData.nextPatient.reportsUploaded}</strong></span>
-                </div>
-              </div>
+          {doctorViewMode === 'consultation' && (
+            <ConsultationWorkbench
+              patient={selectedPatient || defaultNextPatient}
+              onBack={() => setDoctorViewMode('dashboard')}
+              onCompleteConsultation={() => setDoctorViewMode('dashboard')}
+            />
+          )}
 
-              <div className="ai-summary-box">
-                <h4>AI Patient History Brief:</h4>
-                <p>{dashboardData.nextPatient.aiSummary}</p>
-                <div className="provenance-tag">Data Source: Patient Intake + Verified Records</div>
-              </div>
+          {doctorViewMode === 'alerts' && (
+            <FollowupAlertsInbox />
+          )}
+        </main>
+      )}
 
-              {/* Timeline list */}
-              <div className="timeline-section">
-                <h4>Consultation History Timeline</h4>
-                <div className="timeline-item">
-                  <div className="t-date">08 Aug 2026</div>
-                  <div className="t-desc">Fever + Cough (Today's Visit)</div>
-                </div>
-                <div className="timeline-item">
-                  <div className="t-date">10 Jun 2026</div>
-                  <div className="t-desc">Cough & Chest X-Ray (Clear)</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: AI Consultation Scribe & Approval */}
-            <div className="card scribe-card">
-              <div className="card-header">
-                <h3>🎙️ AI Consultation Scribe</h3>
-                <button className="btn-scribing" onClick={handleGenerateScribeDraft} disabled={isScribing}>
-                  {isScribing ? 'Generating SOAP Draft...' : '✨ Generate Draft SOAP Note'}
-                </button>
-              </div>
-
-              <div className="transcript-box">
-                <label>Consultation Audio Transcript:</label>
-                <textarea
-                  rows={4}
-                  value={consultTranscript}
-                  onChange={(e) => setConsultTranscript(e.target.value)}
-                />
-              </div>
-
-              {soapDraft && (
-                <div className="soap-draft-container">
-                  <div className="soap-header">
-                    <h4>AI Draft Note (Awaiting Doctor Review & Approval)</h4>
-                    <span className="badge-draft">DRAFT</span>
-                  </div>
-
-                  <div className="soap-grid">
-                    <div>
-                      <label>Chief Complaint:</label>
-                      <input type="text" defaultValue={soapDraft.draft_chief_complaint} />
-                    </div>
-                    <div>
-                      <label>Assessment / Diagnosis:</label>
-                      <input type="text" defaultValue={soapDraft.draft_assessment} />
-                    </div>
-                  </div>
-
-                  <div className="rx-proposal">
-                    <h4>Proposed Prescription:</h4>
-                    {soapDraft.proposed_prescription && soapDraft.proposed_prescription.map((rx, idx) => (
-                      <div className="rx-item" key={idx}>
-                        <strong>{rx.medicine_name}</strong> - {rx.dosage} ({rx.frequency}) for {rx.duration} [{rx.instructions}]
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="approval-actions">
-                    <button className="btn-approve" onClick={handleApproveConsultation}>
-                      ✅ Edit & Approve Prescription
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {approvedStatus && (
-                <div className="approval-success-banner">
-                  <h4>🎉 Consultation Approved & Locked!</h4>
-                  <p>Prescription PDF generated: <a href={approvedStatus.prescription.pdf_url} target="_blank" rel="noreferrer">{approvedStatus.prescription.pdf_url}</a></p>
-                  <p>Automated WhatsApp Follow-up scheduled for: <strong>{new Date(approvedStatus.followup_job.scheduled_for).toLocaleDateString()}</strong></p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* 2. AI FRONT DESK TAB */}
-        {activeTab === 'frontdesk' && (
-          <div className="card frontdesk-container">
-            <div className="card-header">
-              <h3>🤖 AI Front Desk Receptionist (Voice & WhatsApp)</h3>
-              <div className="lang-selector">
-                <span>Language:</span>
-                <button className={`lang-btn ${language === 'en' ? 'active' : ''}`} onClick={() => setLanguage('en')}>English</button>
-                <button className={`lang-btn ${language === 'hi' ? 'active' : ''}`} onClick={() => setLanguage('hi')}>Hindi</button>
-                <button className={`lang-btn ${language === 'te' ? 'active' : ''}`} onClick={() => setLanguage('te')}>Telugu</button>
-              </div>
-            </div>
-
-            <div className="chat-window">
-              {chatMessages.map((msg, idx) => (
-                <div key={idx} className={`chat-bubble ${msg.sender === 'Patient' ? 'patient' : 'ai'}`}>
-                  <div className="chat-sender">{msg.sender} <span className="chat-time">{msg.time}</span></div>
-                  <div className="chat-text">{msg.text}</div>
-                  {msg.toolCall && (
-                    <div className="tool-call-badge">
-                      🛠️ Executed Tool: <code>{msg.toolCall.name}</code>
-                    </div>
-                  )}
-                </div>
-              ))}
-              {isAiProcessing && <div className="typing-indicator">AI Front Desk is processing tool logic...</div>}
-            </div>
-
-            <form onSubmit={handleFrontDeskSubmit} className="chat-form">
-              <input
-                type="text"
-                placeholder={language === 'te' ? 'నమస్కారం, అపాయింట్‌మెంట్ బుక్ చేయండి...' : language === 'hi' ? 'नमस्ते, अवाइंटमेंट बुक करें...' : 'Type message e.g. Book appointment with Dr. Ahmed tomorrow 5:30 PM...'}
-                value={userChatInput}
-                onChange={(e) => setUserChatInput(e.target.value)}
-              />
-              <button type="submit" disabled={isAiProcessing}>Send</button>
-            </form>
-          </div>
-        )}
-
-        {/* 3. RECEPTION QUEUE & FOLLOW-UPS */}
-        {activeTab === 'reception' && (
-          <div className="workspace-grid">
-            <div className="card queue-card">
-              <h3>📋 Today's Queue & Appointments</h3>
+      {/* 3. RECEPTIONIST ROLE VIEW */}
+      {activeRole === 'receptionist' && (
+        <main className="doctoros-main-content">
+          <div className="card">
+            <h3>📋 Receptionist Desk & Walk-in Queue Manager</h3>
+            <p style={{ color: '#94a3b8' }}>Register walk-in patients, manage appointment queue, collect payments, and review AI front desk tasks.</p>
+            <div className="queue-table-card">
               <table className="doctoros-table">
                 <thead>
                   <tr>
                     <th>Time</th>
                     <th>Patient</th>
                     <th>Doctor</th>
-                    <th>Channel</th>
+                    <th>Booking Channel</th>
+                    <th>Payment</th>
                     <th>Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>05:00 PM</td>
+                    <td>05:30 PM</td>
                     <td>Rahul Sharma</td>
                     <td>Dr. Ahmed</td>
                     <td><span className="badge-channel">AI Voice</span></td>
-                    <td><span className="badge-status waiting">Waiting</span></td>
+                    <td>₹500 (Paid UPI)</td>
+                    <td><span className="badge-status waiting">Waiting in Lounge</span></td>
                   </tr>
                   <tr>
-                    <td>05:30 PM</td>
+                    <td>05:45 PM</td>
                     <td>Priya Patel</td>
                     <td>Dr. Ahmed</td>
                     <td><span className="badge-channel wa">WhatsApp</span></td>
-                    <td><span className="badge-status scheduled">Scheduled</span></td>
-                  </tr>
-                  <tr>
-                    <td>06:00 PM</td>
-                    <td>Anand Kumar</td>
-                    <td>Dr. Verma</td>
-                    <td><span className="badge-channel walkin">Walk-in</span></td>
-                    <td><span className="badge-status completed">Completed</span></td>
+                    <td>₹500 (Pending)</td>
+                    <td><span className="badge-status waiting">Waiting</span></td>
                   </tr>
                 </tbody>
               </table>
             </div>
+          </div>
+        </main>
+      )}
 
-            <div className="card followup-card">
-              <h3>📱 Automated 3-Day Follow-up Simulator</h3>
-              <p>Simulate patient WhatsApp response to automated check-in:</p>
-              
-              <div className="followup-input-group">
-                <input
-                  type="text"
-                  value={followupInput}
-                  onChange={(e) => setFollowupInput(e.target.value)}
-                />
-                <button onClick={handleSimulateFollowup}>Test Follow-up Response</button>
+      {/* 4. NURSE ROLE VIEW */}
+      {activeRole === 'nurse' && (
+        <main className="doctoros-main-content">
+          <div className="card">
+            <h3>👩‍⚕️ Nurse Vitals & Patient Prep Station</h3>
+            <p style={{ color: '#94a3b8' }}>Record patient vitals (Blood Pressure, Heart Rate, SpO2, Temperature, Weight) before doctor consultation.</p>
+            <div className="profile-grid" style={{ marginTop: '1rem' }}>
+              <div><strong>Patient:</strong> Rahul Sharma (34/M)</div>
+              <div><label>BP (mmHg):</label> <input type="text" defaultValue="120/80" style={{ background: '#0f172a', border: '1px solid #334155', color: '#fff', padding: '4px 8px', borderRadius: '4px' }} /></div>
+              <div><label>SpO2 (%):</label> <input type="text" defaultValue="98%" style={{ background: '#0f172a', border: '1px solid #334155', color: '#fff', padding: '4px 8px', borderRadius: '4px' }} /></div>
+              <div><label>Temp (°F):</label> <input type="text" defaultValue="101°F" style={{ background: '#0f172a', border: '1px solid #334155', color: '#fff', padding: '4px 8px', borderRadius: '4px' }} /></div>
+            </div>
+          </div>
+        </main>
+      )}
+
+      {/* 5. LAB TECHNICIAN ROLE VIEW */}
+      {activeRole === 'lab_tech' && (
+        <main className="doctoros-main-content">
+          <div className="card">
+            <h3>🧪 Lab Technician Test & Sample Collection Station</h3>
+            <p style={{ color: '#94a3b8' }}>View doctor-ordered lab tests, collect blood samples, and upload PDF/Scan reports.</p>
+            <div className="report-item-row" style={{ marginTop: '1rem' }}>
+              <div>
+                <strong>Rahul Sharma (UHID-8921)</strong>
+                <div>Ordered Test: <strong>CBC (Complete Blood Count)</strong></div>
               </div>
+              <button className="btn-primary-action" style={{ padding: '6px 12px', fontSize: '0.85rem' }}>Upload Lab PDF</button>
+            </div>
+          </div>
+        </main>
+      )}
 
-              {followupResult && (
-                <div className="followup-result-box">
-                  <h4>Status Tag: <span className={`status-tag ${followupResult.followup_status.toLowerCase()}`}>{followupResult.followup_status}</span></h4>
-                  <p><strong>AI Reply:</strong> {followupResult.reply_text}</p>
-                  <p><strong>Action Required:</strong> {followupResult.action_required}</p>
-                  {followupResult.escalation && <div className="alert-red">🚨 Escalation Alert Triggered!</div>}
+      {/* 6. PHARMACIST ROLE VIEW */}
+      {activeRole === 'pharmacist' && (
+        <main className="doctoros-main-content">
+          <div className="card">
+            <h3>💊 Pharmacy & Medicine Dispensing Counter</h3>
+            <p style={{ color: '#94a3b8' }}>View approved doctor prescriptions and dispense medications to patients.</p>
+            <div className="soap-draft-container" style={{ marginTop: '1rem' }}>
+              <h4>Rahul Sharma — Approved Prescription</h4>
+              <div className="rx-item">1. <strong>Paracetamol 650mg</strong> - 1 tablet (1-0-1) for 3 days</div>
+              <div className="rx-item">2. <strong>Ambroxol Syrup</strong> - 10ml (0-0-1) for 5 days</div>
+              <button className="btn-approve" style={{ marginTop: '1rem' }}>Dispense Medicines</button>
+            </div>
+          </div>
+        </main>
+      )}
+
+      {/* 7. ACCOUNTANT ROLE VIEW */}
+      {activeRole === 'accountant' && (
+        <main className="doctoros-main-content">
+          <div className="card">
+            <h3>💰 Billing & Expenses Dashboard</h3>
+            <p style={{ color: '#94a3b8' }}>Manage consultation fees, lab invoices, pharmacy billing, and daily revenue reports.</p>
+            <div className="doc-metric-val green-text">₹48,500 Today</div>
+          </div>
+        </main>
+      )}
+
+      {/* 8. CLINIC MANAGER ROLE VIEW */}
+      {activeRole === 'manager' && (
+        <main className="doctoros-main-content">
+          <div className="card">
+            <h3>👨‍💼 Clinic Manager Operations Console</h3>
+            <p style={{ color: '#94a3b8' }}>Doctor availability schedules, staff rosters, patient retention rate, and clinic performance metrics.</p>
+          </div>
+        </main>
+      )}
+
+      {/* 9. AI RECEPTIONIST ROLE VIEW */}
+      {activeRole === 'ai_receptionist' && (
+        <main className="doctoros-main-content">
+          <div className="card frontdesk-container">
+            <h3>🤖 AI Front Desk Telephony & WhatsApp Simulator</h3>
+            <p style={{ color: '#94a3b8' }}>Simulate patient voice calls & WhatsApp messages with real-time tool execution.</p>
+            
+            <div className="chat-window">
+              {chatMessages.map((msg, idx) => (
+                <div key={idx} className={`chat-bubble ${msg.sender === 'Patient' ? 'patient' : 'ai'}`}>
+                  <div className="chat-sender">{msg.sender} <span className="chat-time">{msg.time}</span></div>
+                  <div className="chat-text">{msg.text}</div>
                 </div>
-              )}
+              ))}
+              {isAiProcessing && <div className="typing-indicator">AI Front Desk executing tool logic...</div>}
+            </div>
+
+            <form onSubmit={handleFrontDeskSubmit} className="chat-form">
+              <input
+                type="text"
+                placeholder="Type message e.g. Book appointment with Dr. Ahmed tomorrow 5:30 PM..."
+                value={userChatInput}
+                onChange={(e) => setUserChatInput(e.target.value)}
+              />
+              <button type="submit" disabled={isAiProcessing}>Send</button>
+            </form>
+          </div>
+        </main>
+      )}
+
+      {/* 10. AI FOLLOW-UP AGENT ROLE VIEW */}
+      {activeRole === 'ai_followup' && (
+        <main className="doctoros-main-content">
+          <div className="card">
+            <h3>🤖 Automated AI Follow-up Check-in Agent</h3>
+            <p style={{ color: '#94a3b8' }}>Executes background 3-day recovery check-ins and triages patient replies into IMPROVING, NEEDS_REVIEW, or EMERGENCY.</p>
+            <FollowupAlertsInbox />
+          </div>
+        </main>
+      )}
+
+      {/* 11. PATIENT PORTAL ROLE VIEW */}
+      {activeRole === 'patient' && (
+        <main className="doctoros-main-content">
+          <div className="card">
+            <h3>👤 Patient Health Portal</h3>
+            <p style={{ color: '#94a3b8' }}>View upcoming appointments, download doctor prescriptions, and upload lab reports.</p>
+            <div className="approval-success-banner" style={{ marginTop: '1rem' }}>
+              <h4>Upcoming Appointment: Dr. Ahmed</h4>
+              <p>Date: Today, 08 Aug 2026 at 5:30 PM</p>
+              <button className="btn-view-report" style={{ marginTop: '0.5rem' }}>Download Prescription PDF</button>
             </div>
           </div>
-        )}
+        </main>
+      )}
 
-        {/* 4. CLINIC ANALYTICS TAB */}
-        {activeTab === 'analytics' && (
-          <div className="analytics-grid">
-            <div className="metric-card">
-              <h4>Today Appointments</h4>
-              <div className="metric-val">{dashboardData.today.appointmentsCount}</div>
-              <div className="metric-sub">{dashboardData.today.completedCount} Completed</div>
-            </div>
-
-            <div className="metric-card">
-              <h4>AI Calls Handled</h4>
-              <div className="metric-val">{dashboardData.today.aiCallsHandled}</div>
-              <div className="metric-sub">0 Human Escalations Needed</div>
-            </div>
-
-            <div className="metric-card">
-              <h4>WhatsApp Messages</h4>
-              <div className="metric-val">{dashboardData.today.whatsappConversations}</div>
-              <div className="metric-sub">Auto Booking & Rx Delivery</div>
-            </div>
-
-            <div className="metric-card">
-              <h4>Today Revenue</h4>
-              <div className="metric-val">₹{dashboardData.today.revenueInr.toLocaleString()}</div>
-              <div className="metric-sub">Consultation & Services</div>
-            </div>
+      {/* 12. SUPER ADMIN ROLE VIEW */}
+      {activeRole === 'super_admin' && (
+        <main className="doctoros-main-content">
+          <div className="card">
+            <h3>🔐 Super Admin SaaS Platform Dashboard</h3>
+            <p style={{ color: '#94a3b8' }}>Manage multi-tenant clinics, SaaS subscription billing, system health, and API integrations.</p>
           </div>
-        )}
-      </main>
+        </main>
+      )}
+
+      {/* Patient Profile Drawer */}
+      {isDrawerOpen && (
+        <PatientProfileDrawer
+          patient={selectedPatient || defaultNextPatient}
+          onClose={() => setIsDrawerOpen(false)}
+          onStartConsultation={handleStartConsultation}
+        />
+      )}
     </div>
   );
 }
