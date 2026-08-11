@@ -1,12 +1,71 @@
-import React from 'react';
-import { Users, Clock, CheckCircle2, AlertCircle, FileText, Activity, ArrowRight, Play, Eye } from 'lucide-react';
+import React, { useState } from 'react';
+import { Users, Clock, CheckCircle2, AlertCircle, FileText, Activity, ArrowRight, Play, Eye, Search, Phone, UserCheck } from 'lucide-react';
 
 export default function DoctorDashboardView({ dashboardData, onStartConsultation, onOpenPatientProfile }) {
   const { today, nextPatient } = dashboardData;
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Sample Registered Patient Database for Search
+  const patientRegistry = [
+    { id: 'P-10928', name: 'Rahul Sharma', age: 34, gender: 'Male', phone: '9876543210', uhid: 'UHID-8921', time: '5:30 PM', reason: 'Fever + Cough (3 days)', visits: 3, status: 'Waiting' },
+    { id: 'P-10929', name: 'Priya Patel', age: 29, gender: 'Female', phone: '9812345678', uhid: 'UHID-9012', time: '5:45 PM', reason: 'Severe Headache & Migraine', visits: 1, status: 'Waiting' },
+    { id: 'P-10930', name: 'Anand Kumar', age: 45, gender: 'Male', phone: '9765432109', uhid: 'UHID-7811', time: '6:00 PM', reason: 'Diabetes Follow-up & HbA1c Review', visits: 6, status: 'Waiting' },
+    { id: 'P-10931', name: 'Sunita Devi', age: 52, gender: 'Female', phone: '9654321098', uhid: 'UHID-6502', time: '5:00 PM', reason: 'Hypertension Checkup', visits: 8, status: 'Completed' }
+  ];
+
+  // Filtered queue based on Phone, UHID, or Name
+  const filteredPatients = patientRegistry.filter(patient => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return true;
+    return (
+      patient.name.toLowerCase().includes(q) ||
+      patient.phone.includes(q) ||
+      patient.uhid.toLowerCase().includes(q) ||
+      patient.id.toLowerCase().includes(q)
+    );
+  });
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    
+    // Find best match and open profile drawer
+    const match = filteredPatients[0];
+    if (match) {
+      onOpenPatientProfile(match);
+    }
+  };
 
   return (
     <div className="doctor-dashboard-container">
-      {/* 1. Today's Metrics Bar */}
+      {/* 1. Patient Search Bar */}
+      <div className="patient-search-bar-card">
+        <form onSubmit={handleSearchSubmit} className="search-form-row">
+          <div className="search-input-wrapper">
+            <Search size={18} className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search patient by Phone Number (+91 98765 43210) or Patient UHID (UHID-8921)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="patient-search-input"
+            />
+            {searchQuery && (
+              <button type="button" className="clear-search-btn" onClick={() => setSearchQuery('')}>×</button>
+            )}
+          </div>
+          <button type="submit" className="btn-search-patient">
+            <Search size={16} /> Search Patient
+          </button>
+        </form>
+        {searchQuery && (
+          <div className="search-results-hint">
+            Found <strong>{filteredPatients.length}</strong> matching record(s) for "{searchQuery}"
+          </div>
+        )}
+      </div>
+
+      {/* 2. Today's Metrics Bar */}
       <div className="doctor-metrics-grid">
         <div className="doc-metric-card">
           <div className="doc-metric-header">
@@ -45,7 +104,7 @@ export default function DoctorDashboardView({ dashboardData, onStartConsultation
         </div>
       </div>
 
-      {/* 2. NEXT PATIENT HIGHLIGHT CARD */}
+      {/* 3. NEXT PATIENT HIGHLIGHT CARD */}
       <div className="next-patient-hero-card">
         <div className="hero-badge">
           <span className="live-dot animate-pulse"></span> NEXT PATIENT IN QUEUE • 5:30 PM
@@ -64,13 +123,16 @@ export default function DoctorDashboardView({ dashboardData, onStartConsultation
 
           <div className="quick-stats-row">
             <div className="stat-chip">
-              <Activity size={16} /> Previous Visits: <strong>3</strong>
+              <Phone size={14} /> +91 98765 43210
             </div>
             <div className="stat-chip">
-              <FileText size={16} /> Lab Reports: <strong>2 Uploaded</strong>
+              <UserCheck size={14} /> UHID: <strong>UHID-8921</strong>
             </div>
-            <div className="stat-chip warning-chip">
-              <AlertCircle size={16} /> Allergy Flag: <strong>Penicillin</strong>
+            <div className="stat-chip">
+              <Activity size={14} /> Previous Visits: <strong>3</strong>
+            </div>
+            <div className="stat-chip">
+              <FileText size={14} /> Lab Reports: <strong>2 Uploaded</strong>
             </div>
           </div>
 
@@ -86,11 +148,11 @@ export default function DoctorDashboardView({ dashboardData, onStartConsultation
         </div>
       </div>
 
-      {/* 3. Today's Patient Queue Table */}
+      {/* 4. Today's Patient Queue Table */}
       <div className="card queue-table-card">
         <div className="card-header">
           <h3>📋 Today's Clinical Appointment Queue</h3>
-          <span className="queue-count-badge">18 Total Patients</span>
+          <span className="queue-count-badge">{filteredPatients.length} Patient(s) Shown</span>
         </div>
 
         <table className="doctoros-table">
@@ -98,66 +160,46 @@ export default function DoctorDashboardView({ dashboardData, onStartConsultation
             <tr>
               <th>Time</th>
               <th>Patient Name</th>
+              <th>Phone Number</th>
               <th>UHID</th>
               <th>Reason / Symptoms</th>
-              <th>History</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr className="active-row">
-              <td><strong>5:30 PM</strong></td>
-              <td><strong>Rahul Sharma</strong> (34/M)</td>
-              <td><code>UHID-8921</code></td>
-              <td>Fever + Cough (3 days)</td>
-              <td>3 Past Visits</td>
-              <td><span className="badge-status waiting">Waiting</span></td>
-              <td>
-                <button className="btn-table-action" onClick={() => onStartConsultation(nextPatient)}>
-                  Consult Now
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>5:45 PM</td>
-              <td>Priya Patel (29/F)</td>
-              <td><code>UHID-9012</code></td>
-              <td>Severe Headache & Migraine</td>
-              <td>1 Past Visit</td>
-              <td><span className="badge-status waiting">Waiting</span></td>
-              <td>
-                <button className="btn-table-action secondary" onClick={() => onOpenPatientProfile({ name: 'Priya Patel', age: 29 })}>
-                  View File
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>6:00 PM</td>
-              <td>Anand Kumar (45/M)</td>
-              <td><code>UHID-7811</code></td>
-              <td>Diabetes Follow-up & HbA1c Review</td>
-              <td>6 Past Visits</td>
-              <td><span className="badge-status waiting">Waiting</span></td>
-              <td>
-                <button className="btn-table-action secondary" onClick={() => onOpenPatientProfile({ name: 'Anand Kumar', age: 45 })}>
-                  View File
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>5:00 PM</td>
-              <td>Sunita Devi (52/F)</td>
-              <td><code>UHID-6502</code></td>
-              <td>Hypertension Checkup</td>
-              <td>8 Past Visits</td>
-              <td><span className="badge-status completed">Completed</span></td>
-              <td>
-                <button className="btn-table-action secondary" onClick={() => onOpenPatientProfile({ name: 'Sunita Devi', age: 52 })}>
-                  View Rx
-                </button>
-              </td>
-            </tr>
+            {filteredPatients.length > 0 ? (
+              filteredPatients.map((patient) => (
+                <tr key={patient.id} className={patient.status === 'Waiting' && patient.name === 'Rahul Sharma' ? 'active-row' : ''}>
+                  <td><strong>{patient.time}</strong></td>
+                  <td><strong>{patient.name}</strong> ({patient.age}/{patient.gender.charAt(0)})</td>
+                  <td><code>{patient.phone}</code></td>
+                  <td><code>{patient.uhid}</code></td>
+                  <td>{patient.reason}</td>
+                  <td>
+                    <span className={`badge-status ${patient.status.toLowerCase()}`}>
+                      {patient.status}
+                    </span>
+                  </td>
+                  <td>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <button className="btn-table-action" onClick={() => onStartConsultation(patient)}>
+                        Consult Now
+                      </button>
+                      <button className="btn-table-action secondary" onClick={() => onOpenPatientProfile(patient)}>
+                        View File
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={7} style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>
+                  No matching patients found for "{searchQuery}". Try searching by phone number (e.g. 9876543210) or UHID (e.g. UHID-8921).
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
