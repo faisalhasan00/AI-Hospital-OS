@@ -20,7 +20,6 @@ export default function Login({ onLogin }) {
       });
 
       if (error) {
-        // Fallback for demo mode if Supabase user is not yet created
         console.warn('Supabase Auth warning, proceeding in Demo Mode:', error.message);
         handleDemoLogin();
         return;
@@ -35,7 +34,6 @@ export default function Login({ onLogin }) {
   };
 
   const handleDemoLogin = () => {
-    // Demo session object
     const demoSession = {
       user: {
         id: 'demo-doctor-id',
@@ -54,24 +52,24 @@ export default function Login({ onLogin }) {
       alignItems: 'center',
       justifyContent: 'center',
       minHeight: '100vh',
-      backgroundColor: '#0b0f19',
+      backgroundColor: '#f8fafc',
       fontFamily: 'Inter, system-ui, sans-serif',
       padding: '20px',
-      color: '#e2e8f0'
+      color: '#0f172a'
     }}>
       <div style={{
         width: '100%',
         maxWidth: '420px',
-        backgroundColor: '#1e293b',
+        backgroundColor: '#ffffff',
         borderRadius: '16px',
-        border: '1px solid #334155',
-        boxShadow: '0 10px 25px -5px rgba(0,0,0,0.5)',
+        border: '1px solid #e2e8f0',
+        boxShadow: '0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04)',
         overflow: 'hidden'
       }}>
         {/* Header */}
         <div style={{
           background: 'linear-gradient(135deg, #0284c7 0%, #0d9488 100%)',
-          padding: '30px 20px',
+          padding: '32px 20px',
           textAlign: 'center',
           color: '#ffffff',
           display: 'flex',
@@ -79,12 +77,19 @@ export default function Login({ onLogin }) {
           alignItems: 'center',
           justifyContent: 'center'
         }}>
-          <Activity size={40} style={{ color: '#ffffff' }} />
+          <div style={{
+            background: 'rgba(255,255,255,0.2)',
+            padding: '10px',
+            borderRadius: '12px',
+            marginBottom: '8px'
+          }}>
+            <Activity size={36} style={{ color: '#ffffff' }} />
+          </div>
           <h1 style={{
             fontSize: '24px',
             fontWeight: 800,
-            margin: '10px 0 4px 0',
-            letterSpacing: '0.05em',
+            margin: '6px 0 4px 0',
+            letterSpacing: '0.04em',
             color: '#ffffff'
           }}>
             AI CLINIC OS
@@ -95,18 +100,18 @@ export default function Login({ onLogin }) {
             fontWeight: 500,
             margin: 0
           }}>
-            Doctor & Staff Authentication Portal
+            Doctor & Clinical Staff Authentication
           </p>
         </div>
 
         {/* Card Body */}
         <div style={{ padding: '30px 25px' }}>
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
             {error && (
               <div style={{
-                backgroundColor: '#7f1d1d',
-                border: '1px solid #ef4444',
-                color: '#fecaca',
+                backgroundColor: '#fef2f2',
+                border: '1px solid #fecaca',
+                color: '#991b1b',
                 padding: '12px',
                 borderRadius: '8px',
                 fontSize: '13px'
@@ -117,11 +122,11 @@ export default function Login({ onLogin }) {
             
             {/* Email Field */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '12px', fontWeight: 600, color: '#94a3b8' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}>
                 Clinical ID / Email
               </label>
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                <div style={{ position: 'absolute', left: '12px', color: '#64748b' }}>
+                <div style={{ position: 'absolute', left: '12px', color: '#94a3b8' }}>
                   <User size={18} />
                 </div>
                 <input
@@ -130,12 +135,12 @@ export default function Login({ onLogin }) {
                   onChange={(e) => setEmail(e.target.value)}
                   style={{
                     width: '100%',
-                    padding: '12px 12px 12px 40px',
+                    padding: '11px 11px 11px 40px',
                     borderRadius: '8px',
-                    border: '1px solid #334155',
+                    border: '1px solid #cbd5e1',
                     fontSize: '14px',
-                    backgroundColor: '#0f172a',
-                    color: '#e2e8f0',
+                    backgroundColor: '#ffffff',
+                    color: '#0f172a',
                     outline: 'none'
                   }}
                   placeholder="doctor@ai-hospital.com"
@@ -146,11 +151,11 @@ export default function Login({ onLogin }) {
 
             {/* Password Field */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <label style={{ fontSize: '12px', fontWeight: 600, color: '#94a3b8' }}>
+              <label style={{ fontSize: '12px', fontWeight: 600, color: '#475569' }}>
                 Passcode
               </label>
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                <div style={{ position: 'absolute', left: '12px', color: '#64748b' }}>
+                <div style={{ position: 'absolute', left: '12px', color: '#94a3b8' }}>
                   <Lock size={18} />
                 </div>
                 <input
@@ -159,12 +164,12 @@ export default function Login({ onLogin }) {
                   onChange={(e) => setPassword(e.target.value)}
                   style={{
                     width: '100%',
-                    padding: '12px 12px 12px 40px',
+                    padding: '11px 11px 11px 40px',
                     borderRadius: '8px',
-                    border: '1px solid #334155',
+                    border: '1px solid #cbd5e1',
                     fontSize: '14px',
-                    backgroundColor: '#0f172a',
-                    color: '#e2e8f0',
+                    backgroundColor: '#ffffff',
+                    color: '#0f172a',
                     outline: 'none'
                   }}
                   placeholder="••••••••"
@@ -186,7 +191,8 @@ export default function Login({ onLogin }) {
                 borderRadius: '8px',
                 fontWeight: 700,
                 fontSize: '14px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                boxShadow: '0 2px 4px rgba(2, 132, 199, 0.2)'
               }}
             >
               {loading ? 'Authenticating...' : 'ACCESS CLINIC DASHBOARD'}
@@ -199,9 +205,9 @@ export default function Login({ onLogin }) {
               style={{
                 width: '100%',
                 padding: '10px 20px',
-                background: '#0f172a',
-                color: '#38bdf8',
-                border: '1px solid #0284c7',
+                background: '#f0f9ff',
+                color: '#0369a1',
+                border: '1px solid #bae6fd',
                 borderRadius: '8px',
                 fontWeight: 600,
                 fontSize: '13px',
@@ -219,14 +225,14 @@ export default function Login({ onLogin }) {
           {/* Sample Credentials Box */}
           <div style={{
             marginTop: '20px',
-            backgroundColor: '#0f172a',
-            border: '1px solid #334155',
+            backgroundColor: '#f8fafc',
+            border: '1px solid #e2e8f0',
             padding: '12px',
             borderRadius: '8px',
             fontSize: '12px',
-            color: '#94a3b8'
+            color: '#64748b'
           }}>
-            <strong style={{ color: '#38bdf8' }}>Demo Credentials:</strong>
+            <strong style={{ color: '#0284c7' }}>Demo Credentials:</strong>
             <div style={{ marginTop: '4px' }}>Email: <code>doctor@ai-hospital.com</code></div>
             <div>Password: <code>doctor123</code></div>
           </div>
