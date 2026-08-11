@@ -30,14 +30,249 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
 }
 
-.doctoros-container {
+/* 2-Column Sidebar Layout Wrapper */
+.doctoros-layout-wrapper {
   display: flex;
-  flex-direction: column;
   min-height: 100vh;
   background-color: var(--bg-main);
   color: var(--text-primary);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  line-height: 1.5;
+}
+
+.doctoros-sidebar-container {
+  width: 270px;
+  background: #ffffff;
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  box-shadow: var(--shadow-sm);
+  z-index: 50;
+}
+
+.sidebar-brand-box {
+  padding: 1.25rem 1.25rem 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.brand-logo-badge {
+  font-size: 1.8rem;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.sidebar-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.sidebar-role-box {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-main);
+}
+
+.sidebar-role-box label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.role-dropdown-wrapper {
+  position: relative;
+  margin-top: 0.35rem;
+}
+
+.sidebar-role-select {
+  width: 100%;
+  appearance: none;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  color: var(--primary-blue);
+  padding: 0.55rem 2rem 0.55rem 0.75rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.dropdown-arrow-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--primary-blue);
+  pointer-events: none;
+}
+
+.sidebar-nav-menu {
+  padding: 1.25rem 0.75rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.menu-group-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  padding: 0 0.5rem 0.5rem 0.5rem;
+}
+
+.sidebar-nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-nav-item:hover:not(.disabled-item) {
+  background: var(--bg-main);
+  color: var(--text-primary);
+}
+
+.sidebar-nav-item.active {
+  background: #f0f9ff;
+  color: var(--primary-blue);
+  font-weight: 700;
+}
+
+.nav-badge-pill {
+  margin-left: auto;
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 2px 7px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.nav-badge-alert {
+  margin-left: auto;
+  background: #ffe4e6;
+  color: #be123c;
+  padding: 2px 7px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.disabled-item {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sidebar-footer-box {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-main);
+}
+
+.compliance-shield {
+  font-size: 0.725rem;
+  color: #16a34a;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.user-profile-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.75rem;
+}
+
+.user-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--primary-blue);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.user-name {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.user-email {
+  font-size: 0.725rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-signout-btn {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  padding: 0.45rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: background 0.15s ease;
+}
+
+.sidebar-signout-btn:hover {
+  background: #fef2f2;
+}
+
+.doctoros-main-panel {
+  flex: 1;
+  min-width: 0;
 }
 
 /* 1. Global Role Switcher Header */
