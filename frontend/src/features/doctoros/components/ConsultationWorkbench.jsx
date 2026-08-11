@@ -110,48 +110,48 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
       {/* Top Header Navigation */}
       <div className="workbench-top-bar">
         <button className="btn-back" onClick={onBack}>
-          <ArrowLeft size={18} /> Back to Dashboard
+          <ArrowLeft size={16} /> Back to Dashboard
         </button>
         <div className="consult-patient-title">
-          <h2>Active Consultation: <strong>{patient?.name || 'Rahul Sharma'}</strong> (34/M)</h2>
-          <span className="uhid-tag">UHID-8921</span>
+          <h2>Active Consultation: <strong>{patient?.name || 'Rahul Sharma'}</strong> <span className="patient-meta-inline">({patient?.age || 34} · Male)</span></h2>
+          <span className="uhid-subtle-tag">UHID-8921</span>
         </div>
         <div className="safety-rule-pill">
-          <ShieldAlert size={16} /> AI Assists • Doctor Decides
+          <ShieldAlert size={14} /> AI Assists · Doctor Decides
         </div>
       </div>
 
-      {/* Top Visual Vitals Bar */}
-      <div className="visual-vitals-strip workbench-vitals">
-        <div className="vitals-widget-chip temp">
-          <Thermometer size={16} />
+      {/* Top Neutral Vitals Strip */}
+      <div className="neutral-vitals-grid workbench-vitals">
+        <div className="vital-row-card">
+          <div className="vital-icon-box red"><Thermometer size={16} /></div>
           <div>
-            <span className="vital-label">TEMP</span>
-            <strong className="vital-value">101.2°F</strong>
+            <div className="vital-label-title">Temperature</div>
+            <div><strong className="vital-value-main">101.2</strong><span className="vital-unit-sub">°F</span></div>
           </div>
         </div>
 
-        <div className="vitals-widget-chip bp">
-          <Activity size={16} />
+        <div className="vital-row-card">
+          <div className="vital-icon-box blue"><Activity size={16} /></div>
           <div>
-            <span className="vital-label">BP</span>
-            <strong className="vital-value">120/80 mmHg</strong>
+            <div className="vital-label-title">Blood Pressure</div>
+            <div><strong className="vital-value-main">120/80</strong><span className="vital-unit-sub">mmHg</span></div>
           </div>
         </div>
 
-        <div className="vitals-widget-chip spo2">
-          <Wind size={16} />
+        <div className="vital-row-card">
+          <div className="vital-icon-box green"><Wind size={16} /></div>
           <div>
-            <span className="vital-label">SpO2</span>
-            <strong className="vital-value">98%</strong>
+            <div className="vital-label-title">SpO2</div>
+            <div><strong className="vital-value-main">98</strong><span className="vital-unit-sub">%</span></div>
           </div>
         </div>
 
-        <div className="vitals-widget-chip pulse">
-          <Heart size={16} />
+        <div className="vital-row-card">
+          <div className="vital-icon-box purple"><Heart size={16} /></div>
           <div>
-            <span className="vital-label">PULSE</span>
-            <strong className="vital-value">84 bpm</strong>
+            <div className="vital-label-title">Pulse</div>
+            <div><strong className="vital-value-main">84</strong><span className="vital-unit-sub">bpm</span></div>
           </div>
         </div>
       </div>
@@ -162,7 +162,7 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
           <div className="card-header">
             <h3>🎙️ AI Consultation Scribe</h3>
             <button className={`btn-mic ${isRecording ? 'recording' : ''}`} onClick={() => setIsRecording(!isRecording)}>
-              {isRecording ? <MicOff size={18} /> : <Mic size={18} />}
+              {isRecording ? <MicOff size={16} /> : <Mic size={16} />}
               {isRecording ? 'Stop Scribe Mic' : 'Start Scribe Mic'}
             </button>
           </div>
@@ -178,15 +178,15 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
           </div>
 
           <button className="btn-generate-scribe" onClick={handleGenerateScribe} disabled={isAiProcessing}>
-            <Sparkles size={18} /> {isAiProcessing ? 'AI Structuring Draft Note...' : 'Generate / Update AI SOAP Note'}
+            <Sparkles size={16} /> {isAiProcessing ? 'AI Structuring Draft Note...' : 'Generate / Update AI SOAP Note'}
           </button>
         </div>
 
-        {/* Right Column: Doctor Clinical Workbench & Approval */}
+        {/* Right Column: Doctor Clinical Findings & Approval */}
         <div className="card doctor-form-panel">
           <div className="card-header">
             <h3>👨‍⚕️ Doctor Clinical Findings & Medical Decision</h3>
-            <span className="badge-status-draft">SOAP Draft State</span>
+            <span className="next-patient-badge">SOAP Draft State</span>
           </div>
 
           {/* 1. Chief Complaint & History */}
@@ -224,12 +224,12 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
           <div className="rx-builder-section">
             <div className="rx-header">
               <h4>💊 Prescribed Medications</h4>
-              <button className="btn-add-rx" onClick={handleAddMedicine}><Plus size={16} /> Add Medicine</button>
+              <button className="btn-add-rx" onClick={handleAddMedicine}><Plus size={15} /> Add Medicine</button>
             </div>
 
             {prescriptionItems.map((rx) => (
               <div key={rx.id} className="rx-item-card">
-                <div className="rx-inputs-row">
+                <div className="rx-item-row">
                   <input
                     type="text"
                     placeholder="Medicine Name (e.g. Paracetamol)"
@@ -259,7 +259,7 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
                     className="rx-short-input"
                   />
                   <button className="btn-remove-rx" onClick={() => handleRemoveMedicine(rx.id)}>
-                    <Trash2 size={16} />
+                    <Trash2 size={15} />
                   </button>
                 </div>
               </div>
@@ -287,8 +287,8 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
 
               <div className="ordered-tests-list">
                 {orderedTests.map((test, idx) => (
-                  <span key={idx} className="test-chip-visual">
-                    <Check size={12} /> {test} <button onClick={() => setOrderedTests(orderedTests.filter(t => t !== test))}>×</button>
+                  <span key={idx} className="clinical-tag" style={{ marginTop: '0.4rem', marginRight: '0.4rem' }}>
+                    <Check size={12} style={{ color: 'var(--success)' }} /> {test} <button onClick={() => setOrderedTests(orderedTests.filter(t => t !== test))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--secondary-text)', marginLeft: '4px' }}>×</button>
                   </span>
                 ))}
               </div>
@@ -308,7 +308,7 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
 
           {/* Approve Button */}
           <button className="btn-approve-lock" onClick={handleApprove} disabled={isAiProcessing}>
-            <FileCheck size={20} /> {isAiProcessing ? 'Processing Approval...' : 'Approve & Lock Medical Record (Generate PDF & WhatsApp Rx)'}
+            <FileCheck size={18} /> {isAiProcessing ? 'Processing Approval...' : 'Approve & Lock Medical Record (Generate PDF & WhatsApp Rx)'}
           </button>
 
           {/* Approval Confirmation Banner */}
