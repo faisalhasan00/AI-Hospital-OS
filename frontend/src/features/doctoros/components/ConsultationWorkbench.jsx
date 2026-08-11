@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mic, MicOff, Sparkles, Plus, Trash2, CheckCircle2, AlertTriangle, FileCheck, Send, ArrowLeft } from 'lucide-react';
+import { Mic, MicOff, Sparkles, Plus, Trash2, FileCheck, ArrowLeft, Thermometer, Activity, Wind, Heart, ShieldAlert, Check } from 'lucide-react';
 
 export default function ConsultationWorkbench({ patient, onBack, onCompleteConsultation }) {
   const [isRecording, setIsRecording] = useState(false);
@@ -11,7 +11,7 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
   const [soapData, setSoapData] = useState({
     chiefComplaint: 'High fever for 3 days accompanied by dry cough',
     historyOfPresentIllness: 'Patient reports high fever for 3 days with dry cough. No shortness of breath or chest pain reported.',
-    examinationFindings: 'Body temp: 101°F, BP: 120/80, SpO2: 98%. Chest clear on auscultation.',
+    examinationFindings: 'Body temp: 101.2°F, BP: 120/80, SpO2: 98%. Chest clear on auscultation.',
     diagnosis: 'Acute Upper Respiratory Tract Infection',
     treatmentPlan: 'Symptomatic management, hydration, oral medications, 3 days rest.'
   });
@@ -63,7 +63,6 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
     }
   };
 
-  // Add Medicine Line Item
   const handleAddMedicine = () => {
     setPrescriptionItems([
       ...prescriptionItems,
@@ -71,17 +70,14 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
     ]);
   };
 
-  // Remove Medicine
   const handleRemoveMedicine = (id) => {
     setPrescriptionItems(prescriptionItems.filter(item => item.id !== id));
   };
 
-  // Medicine Item Change
   const handleMedicineChange = (id, field, value) => {
     setPrescriptionItems(prescriptionItems.map(item => item.id === id ? { ...item, [field]: value } : item));
   };
 
-  // Approve & Lock Consultation
   const handleApprove = async () => {
     setIsAiProcessing(true);
     try {
@@ -121,7 +117,42 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
           <span className="uhid-tag">UHID-8921</span>
         </div>
         <div className="safety-rule-pill">
-          <AlertTriangle size={16} /> AI Assists • Doctor Decides
+          <ShieldAlert size={16} /> AI Assists • Doctor Decides
+        </div>
+      </div>
+
+      {/* Top Visual Vitals Bar */}
+      <div className="visual-vitals-strip workbench-vitals">
+        <div className="vitals-widget-chip temp">
+          <Thermometer size={16} />
+          <div>
+            <span className="vital-label">TEMP</span>
+            <strong className="vital-value">101.2°F</strong>
+          </div>
+        </div>
+
+        <div className="vitals-widget-chip bp">
+          <Activity size={16} />
+          <div>
+            <span className="vital-label">BP</span>
+            <strong className="vital-value">120/80 mmHg</strong>
+          </div>
+        </div>
+
+        <div className="vitals-widget-chip spo2">
+          <Wind size={16} />
+          <div>
+            <span className="vital-label">SpO2</span>
+            <strong className="vital-value">98%</strong>
+          </div>
+        </div>
+
+        <div className="vitals-widget-chip pulse">
+          <Heart size={16} />
+          <div>
+            <span className="vital-label">PULSE</span>
+            <strong className="vital-value">84 bpm</strong>
+          </div>
         </div>
       </div>
 
@@ -139,7 +170,7 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
           <div className="transcript-box">
             <label>Live Audio Transcript Stream:</label>
             <textarea
-              rows={6}
+              rows={8}
               value={transcript}
               onChange={(e) => setTranscript(e.target.value)}
               placeholder="Doctor-patient conversation audio will transcribe here in real-time..."
@@ -189,7 +220,7 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
             />
           </div>
 
-          {/* 4. Prescription Builder */}
+          {/* 4. Visual Prescription Builder */}
           <div className="rx-builder-section">
             <div className="rx-header">
               <h4>💊 Prescribed Medications</h4>
@@ -197,38 +228,40 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
             </div>
 
             {prescriptionItems.map((rx) => (
-              <div key={rx.id} className="rx-item-row">
-                <input
-                  type="text"
-                  placeholder="Medicine Name (e.g. Paracetamol)"
-                  value={rx.name}
-                  onChange={(e) => handleMedicineChange(rx.id, 'name', e.target.value)}
-                  className="rx-name-input"
-                />
-                <input
-                  type="text"
-                  placeholder="Dosage (e.g. 650mg)"
-                  value={rx.dosage}
-                  onChange={(e) => handleMedicineChange(rx.id, 'dosage', e.target.value)}
-                  className="rx-short-input"
-                />
-                <input
-                  type="text"
-                  placeholder="Frequency (e.g. 1-0-1)"
-                  value={rx.frequency}
-                  onChange={(e) => handleMedicineChange(rx.id, 'frequency', e.target.value)}
-                  className="rx-short-input"
-                />
-                <input
-                  type="text"
-                  placeholder="Duration (e.g. 3 days)"
-                  value={rx.duration}
-                  onChange={(e) => handleMedicineChange(rx.id, 'duration', e.target.value)}
-                  className="rx-short-input"
-                />
-                <button className="btn-remove-rx" onClick={() => handleRemoveMedicine(rx.id)}>
-                  <Trash2 size={16} />
-                </button>
+              <div key={rx.id} className="rx-item-card">
+                <div className="rx-inputs-row">
+                  <input
+                    type="text"
+                    placeholder="Medicine Name (e.g. Paracetamol)"
+                    value={rx.name}
+                    onChange={(e) => handleMedicineChange(rx.id, 'name', e.target.value)}
+                    className="rx-name-input"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Dosage (e.g. 650mg)"
+                    value={rx.dosage}
+                    onChange={(e) => handleMedicineChange(rx.id, 'dosage', e.target.value)}
+                    className="rx-short-input"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Frequency (e.g. 1-0-1)"
+                    value={rx.frequency}
+                    onChange={(e) => handleMedicineChange(rx.id, 'frequency', e.target.value)}
+                    className="rx-short-input"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Duration (e.g. 3 days)"
+                    value={rx.duration}
+                    onChange={(e) => handleMedicineChange(rx.id, 'duration', e.target.value)}
+                    className="rx-short-input"
+                  />
+                  <button className="btn-remove-rx" onClick={() => handleRemoveMedicine(rx.id)}>
+                    <Trash2 size={16} />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -254,8 +287,8 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
 
               <div className="ordered-tests-list">
                 {orderedTests.map((test, idx) => (
-                  <span key={idx} className="test-chip">
-                    {test} <button onClick={() => setOrderedTests(orderedTests.filter(t => t !== test))}>×</button>
+                  <span key={idx} className="test-chip-visual">
+                    <Check size={12} /> {test} <button onClick={() => setOrderedTests(orderedTests.filter(t => t !== test))}>×</button>
                   </span>
                 ))}
               </div>
