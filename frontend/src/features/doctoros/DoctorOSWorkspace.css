@@ -1292,31 +1292,189 @@
   align-items: center;
 }
 
-.drawer-header h2 {
-  margin: 0;
-  font-size: 1.2rem;
+.drawer-nav-tabs {
+  display: flex;
+  background: var(--bg-main);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 1.5rem;
+}
+
+.drawer-tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.75rem 1rem;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: var(--secondary-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.15s ease;
+}
+
+.drawer-tab-btn:hover {
   color: var(--main-text);
 }
 
-.close-btn {
-  background: transparent;
-  border: none;
+.drawer-tab-btn.active {
+  border-bottom-color: var(--primary-blue);
+  color: var(--primary-blue);
+  font-weight: 700;
+}
+
+.ai-brief-box {
+  background: #F0F9FF;
+  border-color: #C4E2F2;
+}
+
+.ai-brief-box h4 {
+  color: var(--primary-blue);
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+.ai-brief-box p {
+  margin: 0 0 0.65rem 0;
+  font-size: 0.825rem;
+  color: var(--main-text);
+  line-height: 1.5;
+}
+
+.provenance-disclaimer {
+  font-size: 0.75rem;
   color: var(--secondary-text);
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 500;
 }
 
-.drawer-body {
-  padding: 1.5rem;
-  overflow-y: auto;
-  flex: 1;
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.profile-section-box {
+.timeline-visit-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.85rem;
+  transition: border-color 0.15s ease;
+}
+
+.timeline-visit-card.current {
+  border-left: 4px solid var(--primary-blue);
+  background: #F8FAFC;
+}
+
+.visit-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.visit-date-badge {
+  font-size: 0.775rem;
+  font-weight: 700;
+  color: var(--main-text);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.visit-doctor-label {
+  font-size: 0.75rem;
+  color: var(--secondary-text);
+}
+
+.visit-vitals-pills-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.vital-pill-mini {
+  font-size: 0.725rem;
+  font-weight: 600;
   background: var(--bg-main);
   border: 1px solid var(--border-color);
-  border-radius: 10px;
-  padding: 1.15rem;
-  margin-bottom: 1.25rem;
+  padding: 2px 7px;
+  border-radius: 4px;
+  color: var(--main-text);
+}
+
+.vital-pill-mini.red { background: var(--danger-bg); color: var(--danger); border-color: #F8B4B4; }
+.vital-pill-mini.amber { background: var(--warning-bg); color: var(--warning); border-color: #FDE68A; }
+
+.visit-detail-item {
+  font-size: 0.825rem;
+  color: var(--main-text);
+  margin-top: 0.25rem;
+}
+
+.comparison-table-container {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.comparison-table th {
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--secondary-text);
+  background: var(--bg-main);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.comparison-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--main-text);
+}
+
+.comparison-table tr.highlight-row td {
+  background: var(--light-blue);
+}
+
+.trend-val {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-weight: 700;
+}
+
+.trend-val.text-red { color: var(--danger); }
+.trend-val.text-amber { color: var(--warning); }
+
+.trend-summary-callout {
+  background: #F8FAFC;
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--primary-blue);
+  border-radius: 8px;
+  padding: 0.85rem;
+  font-size: 0.8rem;
+  color: var(--main-text);
+}
+
+.trend-summary-callout ul {
+  margin: 0.4rem 0 0 1.25rem;
+  padding: 0;
+  color: var(--secondary-text);
 }
 
 .profile-section-box h4 {
