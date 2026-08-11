@@ -298,6 +298,7 @@
 
 /* 2. PATIENT SEARCH BAR CARD */
 .patient-search-bar-card {
+  position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 12px;
@@ -347,9 +348,12 @@
   right: 10px;
   background: transparent;
   border: none;
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--secondary-text);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-search-patient {
@@ -364,16 +368,117 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  white-space: nowrap;
 }
 
 .btn-search-patient:hover {
   background: var(--primary-blue-hover);
 }
 
-.search-results-hint {
+/* Interactive Search Dropdown */
+.search-results-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+  z-index: 200;
+  overflow: hidden;
+}
+
+.search-dropdown-header {
+  padding: 0.65rem 1rem;
+  background: var(--bg-main);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.775rem;
+  font-weight: 700;
+  color: var(--secondary-text);
+}
+
+.btn-close-dropdown {
+  background: transparent;
+  border: none;
+  color: var(--secondary-text);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.search-dropdown-list {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.search-result-item {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover {
+  background: var(--light-blue);
+}
+
+.search-item-info strong {
+  font-size: 0.9rem;
+  color: var(--main-text);
+}
+
+.item-meta {
   font-size: 0.8rem;
   color: var(--secondary-text);
-  margin-top: 0.4rem;
+  margin-left: 0.4rem;
+}
+
+.item-sub-info {
+  font-size: 0.775rem;
+  color: var(--secondary-text);
+  margin-top: 2px;
+}
+
+.search-item-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.btn-mini-action {
+  background: var(--primary-blue);
+  color: #FFFFFF;
+  border: none;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.btn-mini-action.secondary {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  color: var(--main-text);
+}
+
+.search-no-results {
+  padding: 1rem;
+  font-size: 0.825rem;
+  color: var(--secondary-text);
+  text-align: center;
 }
 
 /* 3. CALM TOP SUMMARY METRIC CARDS */

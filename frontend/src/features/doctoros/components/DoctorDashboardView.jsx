@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Users, Clock, CheckCircle2, AlertCircle, FileText, ArrowRight, Play, Eye, Search, Phone, Thermometer, Wind, Heart, ShieldAlert, Activity } from 'lucide-react';
+import { Users, Clock, CheckCircle2, AlertCircle, FileText, ArrowRight, Play, Eye, Search, Phone, Thermometer, Wind, Heart, ShieldAlert, Activity, UserCheck, X } from 'lucide-react';
 
 export default function DoctorDashboardView({ dashboardData, onStartConsultation, onOpenPatientProfile }) {
   const { today, nextPatient } = dashboardData;
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   // Sample Registered Patient Database
   const patientRegistry = [
@@ -31,12 +32,18 @@ export default function DoctorDashboardView({ dashboardData, onStartConsultation
     const match = filteredPatients[0];
     if (match) {
       onOpenPatientProfile(match);
+      setIsSearchFocused(false);
     }
+  };
+
+  const handleSelectSearchResult = (patient) => {
+    onOpenPatientProfile(patient);
+    setIsSearchFocused(false);
   };
 
   return (
     <div className="doctor-dashboard-container">
-      {/* 1. Patient Search Bar */}
+      {/* 1. Patient Search Bar Card with Dropdown Preview */}
       <div className="patient-search-bar-card">
         <form onSubmit={handleSearchSubmit} className="search-form-row">
           <div className="search-input-wrapper">
@@ -46,19 +53,53 @@ export default function DoctorDashboardView({ dashboardData, onStartConsultation
               placeholder="Search patient by Phone Number (+91 98765 43210) or Patient UHID (UHID-8921)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setIsSearchFocused(true)}
               className="patient-search-input"
             />
             {searchQuery && (
-              <button type="button" className="clear-search-btn" onClick={() => setSearchQuery('')}>×</button>
+              <button type="button" className="clear-search-btn" onClick={() => { setSearchQuery(''); setIsSearchFocused(false); }}>
+                <X size={16} />
+              </button>
             )}
           </div>
           <button type="submit" className="btn-search-patient">
             <Search size={15} /> Search Patient
           </button>
         </form>
-        {searchQuery && (
-          <div className="search-results-hint">
-            Found <strong>{filteredPatients.length}</strong> matching record(s) for "{searchQuery}"
+
+        {/* Live Search Instant Dropdown Results */}
+        {searchQuery.trim() && isSearchFocused && (
+          <div className="search-results-dropdown">
+            <div className="search-dropdown-header">
+              <span>Matching Patients ({filteredPatients.length})</span>
+              <button className="btn-close-dropdown" onClick={() => setIsSearchFocused(false)}>Close</button>
+            </div>
+            {filteredPatients.length > 0 ? (
+              <div className="search-dropdown-list">
+                {filteredPatients.map(patient => (
+                  <div key={patient.id} className="search-result-item" onClick={() => handleSelectSearchResult(patient)}>
+                    <div className="search-item-info">
+                      <strong>{patient.name}</strong> <span className="item-meta">{patient.age} · {patient.gender}</span>
+                      <div className="item-sub-info">
+                        <code>{patient.phone}</code> • <code>{patient.uhid}</code> • {patient.reason}
+                      </div>
+                    </div>
+                    <div className="search-item-actions">
+                      <button className="btn-mini-action" onClick={(e) => { e.stopPropagation(); onStartConsultation(patient); }}>
+                        <Play size={12} /> Consult
+                      </button>
+                      <button className="btn-mini-action secondary" onClick={(e) => { e.stopPropagation(); onOpenPatientProfile(patient); }}>
+                        <Eye size={12} /> Profile
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="search-no-results">
+                No patient found matching "{searchQuery}". Try searching by phone (e.g. 9876543210) or UHID (e.g. UHID-8921).
+              </div>
+            )}
           </div>
         )}
       </div>
