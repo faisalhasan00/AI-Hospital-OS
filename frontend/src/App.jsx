@@ -37,7 +37,7 @@ export default function App() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc', color: '#0f172a' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#edf2f7', color: '#1e293b' }}>
       <DoctorOSWorkspace userSession={session} onSignOut={() => supabase.auth.signOut()} />
     </div>
   );

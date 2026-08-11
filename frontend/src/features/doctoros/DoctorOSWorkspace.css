@@ -1,33 +1,33 @@
 /* DoctorOS & AI Clinic OS Workspace Stylesheet (Light Mode - Human Crafted) */
 
 :root {
-  --bg-main: #f8fafc;
+  --bg-main: #edf2f7;
   --bg-card: #ffffff;
-  --bg-sidebar: #f1f5f9;
-  --border-color: #e2e8f0;
-  --border-hover: #cbd5e1;
+  --bg-sidebar: #f8fafc;
+  --border-color: #cbd5e1;
+  --border-hover: #94a3b8;
   
-  --text-primary: #0f172a;
+  --text-primary: #1e293b;
   --text-secondary: #475569;
   --text-muted: #64748b;
   
-  --primary-teal: #0d9488;
+  --primary-teal: #0f766e;
   --primary-blue: #0284c7;
   --primary-blue-hover: #0369a1;
   --accent-cyan: #0284c7;
   
-  --badge-emerald-bg: #dcfce7;
-  --badge-emerald-text: #15803d;
+  --badge-emerald-bg: #e6f4ea;
+  --badge-emerald-text: #137333;
   
-  --badge-amber-bg: #fef3c7;
-  --badge-amber-text: #b45309;
+  --badge-amber-bg: #fef7e0;
+  --badge-amber-text: #b06000;
   
-  --badge-rose-bg: #ffe4e6;
-  --badge-rose-text: #be123c;
+  --badge-rose-bg: #fce8e6;
+  --badge-rose-text: #c5221f;
   
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 8px -1px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 20px -3px rgba(0, 0, 0, 0.06);
 }
 
 /* 2-Column Sidebar Layout Wrapper */
