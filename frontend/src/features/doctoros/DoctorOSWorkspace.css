@@ -997,6 +997,21 @@
   margin-bottom: 0.35rem;
 }
 
+.grid-2-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
 .emr-input-field {
   width: 100%;
   background: #FFFFFF;
