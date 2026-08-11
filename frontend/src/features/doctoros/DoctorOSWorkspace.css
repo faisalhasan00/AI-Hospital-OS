@@ -1168,6 +1168,52 @@
   background: var(--danger-bg);
 }
 
+.ordered-tests-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+}
+
+.clinical-tag-chip {
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  color: var(--main-text);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.chip-check-icon {
+  color: var(--success);
+  flex-shrink: 0;
+}
+
+.btn-remove-chip {
+  background: transparent;
+  border: none;
+  color: var(--secondary-text);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0 2px;
+  margin-left: 2px;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-remove-chip:hover {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
 .subtle-helper-text {
   display: block;
   font-size: 0.75rem;

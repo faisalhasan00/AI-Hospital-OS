@@ -256,9 +256,11 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
               <label className="emr-field-label">Investigations / Lab Orders</label>
               <select
                 className="emr-input-field"
+                value=""
                 onChange={(e) => {
-                  if (e.target.value && !orderedTests.includes(e.target.value)) {
-                    setOrderedTests([...orderedTests, e.target.value]);
+                  const val = e.target.value;
+                  if (val && !orderedTests.includes(val)) {
+                    setOrderedTests([...orderedTests, val]);
                   }
                 }}
               >
@@ -272,8 +274,10 @@ export default function ConsultationWorkbench({ patient, onBack, onCompleteConsu
 
               <div className="ordered-tests-list">
                 {orderedTests.map((test, idx) => (
-                  <span key={idx} className="clinical-tag" style={{ marginTop: '0.4rem', marginRight: '0.4rem' }}>
-                    <Check size={12} style={{ color: 'var(--success)' }} /> {test} <button onClick={() => setOrderedTests(orderedTests.filter(t => t !== test))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--secondary-text)', marginLeft: '4px' }}>×</button>
+                  <span key={idx} className="clinical-tag-chip">
+                    <Check size={13} className="chip-check-icon" />
+                    <span>{test}</span>
+                    <button type="button" className="btn-remove-chip" onClick={() => setOrderedTests(orderedTests.filter(t => t !== test))}>×</button>
                   </span>
                 ))}
               </div>
