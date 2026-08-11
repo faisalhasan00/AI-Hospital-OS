@@ -955,110 +955,244 @@
   margin-top: 1rem;
 }
 
-.form-group label {
+/* EMR Documentation Form Styles */
+.emr-form-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.emr-header-icon {
+  color: var(--primary-blue);
+}
+
+.emr-header-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--main-text);
+}
+
+.emr-section-container {
+  background: var(--bg-main);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 1.15rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.emr-section-label {
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: var(--secondary-text);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.85rem;
+}
+
+.emr-field-label {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.825rem;
   font-weight: 600;
   color: var(--secondary-text);
   margin-bottom: 0.35rem;
 }
 
-.form-group input, .form-group textarea, .form-group select {
+.emr-input-field {
   width: 100%;
   background: #FFFFFF;
   border: 1px solid var(--border-color);
   color: var(--main-text);
-  padding: 0.6rem;
+  padding: 0.55rem 0.75rem;
   border-radius: 8px;
   font-family: inherit;
   font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.rx-builder-section {
-  background: var(--bg-main);
+.emr-input-field:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(8, 127, 188, 0.08);
+}
+
+.diagnosis-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.emr-input-field.diagnosis-confirmed {
+  background: var(--light-blue);
+  border-color: #C4E2F2;
+  color: var(--primary-blue);
+  font-weight: 700;
+  padding-right: 2.25rem;
+}
+
+.diagnosis-check-icon {
+  position: absolute;
+  right: 12px;
+  color: var(--primary-blue);
+}
+
+.btn-soap-record-secondary {
+  background: #FFFFFF;
   border: 1px solid var(--border-color);
-  padding: 1rem;
-  border-radius: 10px;
-  margin-bottom: 1rem;
+  color: var(--primary-blue);
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.825rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
-.rx-header {
+.btn-soap-record-secondary:hover {
+  background: var(--light-blue);
+  border-color: #C4E2F2;
+}
+
+.rx-section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 
-.btn-add-rx {
+.btn-add-medicine-secondary {
   background: #FFFFFF;
   border: 1px solid var(--border-color);
   color: var(--primary-blue);
   padding: 0.35rem 0.75rem;
   border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.8rem;
   font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
-.rx-item-card {
+.btn-add-medicine-secondary:hover {
+  background: var(--light-blue);
+  border-color: #C4E2F2;
+}
+
+/* Compact Structured Rx Table */
+.rx-table-container {
   background: #FFFFFF;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 0.65rem;
-  margin-bottom: 0.5rem;
+  overflow: hidden;
 }
 
-.rx-item-card input {
-  background: #FFFFFF;
-  border: 1px solid var(--border-color);
+.rx-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rx-table th {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: var(--secondary-text);
+  letter-spacing: 0.04em;
+  background: var(--bg-main);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.rx-table td {
+  padding: 0.45rem 0.65rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.rx-table tr:last-child td {
+  border-bottom: none;
+}
+
+.emr-table-input {
+  width: 100%;
+  background: transparent;
+  border: 1px solid transparent;
   color: var(--main-text);
-  padding: 0.5rem;
+  padding: 0.4rem 0.5rem;
   border-radius: 6px;
   font-size: 0.85rem;
+  outline: none;
 }
 
-.rx-item-row {
-  display: flex;
-  gap: 0.5rem;
+.emr-table-input:focus {
+  background: #FFFFFF;
+  border-color: var(--border-color);
 }
 
-.rx-name-input { flex: 2; }
-.rx-short-input { flex: 1; }
-
-.btn-remove-rx {
-  background: var(--danger-bg);
-  color: var(--danger);
-  border: 1px solid #F8B4B4;
-  padding: 0.5rem;
-  border-radius: 6px;
-  cursor: pointer;
+.emr-table-input.bold-name {
+  font-weight: 600;
+  color: var(--main-text);
 }
 
-.grid-2-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-.btn-approve-lock {
-  background: var(--success);
-  color: #FFFFFF;
+.btn-remove-rx-subtle {
+  background: transparent;
   border: none;
-  padding: 0.85rem 1.5rem;
-  border-radius: 8px;
+  color: var(--danger);
   cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 700;
-  width: 100%;
-  margin-top: 1rem;
+  opacity: 0.7;
+  padding: 4px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  margin: 0 auto;
 }
 
-.btn-approve-lock:hover {
+.btn-remove-rx-subtle:hover {
+  opacity: 1;
+  background: var(--danger-bg);
+}
+
+.subtle-helper-text {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--secondary-text);
+  margin-top: 0.35rem;
+}
+
+/* Balanced Final Approval Action */
+.emr-approval-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.btn-approve-primary {
+  background: var(--success);
+  color: #FFFFFF;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: background 0.15s ease;
+}
+
+.btn-approve-primary:hover {
   background: #12724a;
+}
+
+.approve-caption-text {
+  font-size: 0.775rem;
+  color: var(--secondary-text);
 }
 
 .approval-success-banner {
